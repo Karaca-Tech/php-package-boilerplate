@@ -1,0 +1,29 @@
+{
+    "name": "karaca-tech/package-boilerplate",
+    "description": "A template repository for open source PHP packages",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.22"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "pestphp/pest": "^2.18"
+    },
+    "autoload": {
+        "psr-4": {
+            "KaracaTech\\:PackageName:\\": "src/",
+            "KaracaTech\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "analyse": "./vendor/bin/phpstan analyse"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
