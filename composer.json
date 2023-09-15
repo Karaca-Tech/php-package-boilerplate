@@ -1,6 +1,6 @@
 {
-    "name": "karaca-tech/package-boilerplate",
-    "description": "A template repository for open source PHP packages",
+    "name": "karaca/deneme",
+    "description": "test",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -13,8 +13,8 @@
     },
     "autoload": {
         "psr-4": {
-            "KaracaTech\\:PackageName:\\": "src/",
-            "KaracaTech\\Tests\\": "tests/"
+            "karaca\\{namespace}\\": "src/",
+            "karaca\\Tests\\": "tests/"
         }
     },
     "scripts": {
