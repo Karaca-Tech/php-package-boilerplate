@@ -23,10 +23,12 @@ function success(string $line)
     line($line, 'success');
 }
 
-function error(string $line, int $exitCode = 0)
+function error(string $line, bool $shouldExit = true, int $exitCode = 0)
 {
     line($line, 'error');
-    exit($exitCode);
+    if($shouldExit){
+      exit($exitCode);
+    }
 }
 
 function warning(string $line)
@@ -36,9 +38,21 @@ function warning(string $line)
 
 function ask(string $question, string $default = '')
 {
-    $answer = readline('>>  '.$question.($default ? " ({$default}) : " : ""));
+    $answer = readline('>>  '.$question.($default ? " (Default: {$default}) : " : " : "));
 
     return !$answer ? $default : $answer;
+}
+
+function choose(string $question, array $options, string $default = '')
+{
+  $answer = ask($question."\n\t- ".implode("\n\t- ",$options)."\n\t ",$default);
+
+  if(!array_key_exists($answer, array_flip($options))) {
+    error('Invalid option', false);
+    return choose($question,$options,$default);
+  }
+
+  return $answer;
 }
 
 function confirm(string $question, bool $default = true)
@@ -73,16 +87,18 @@ function configurePackage(?string $packageName, array $options = [])
     global $defaultAuthor;
     line('Configuring package: '.$packageName);
     $decisions = [
-        'karaca' => strpos($packageName, '/') ? explode('/', $packageName)[0] : ask('Vendor name'),
-        'deneme' => $packageName,
-        'test' => ask('Package description'),
-        'Utku Korkmaz' => ask('Package author', $defaultAuthor),
+        '{php_version}' => '^'.choose('PHP version', ['8.0','8.1','8.2'], '8.1'),
+        '{vendor}' => strpos($packageName, '/') ? explode('/', $packageName)[0] : ask('Vendor name'),
+        '{package_name}' => $packageName,
+        '{namespace}' => ask('Package namespace'),
+        '{description}' => ask('Package description'),
+        '{author}' => ask('Package author', $defaultAuthor),
     ];
 
     $files = glob(__DIR__.'/*');
 
     foreach ($files as $file) {
-        if (is_dir($file)) {
+        if (is_dir($file) || $file === __FILE__) {
             continue;
         }
         $contents = file_get_contents($file);
@@ -92,11 +108,15 @@ function configurePackage(?string $packageName, array $options = [])
         file_put_contents($file, $contents);
     }
 
-    if(confirm('Do you want to initialize git repository?')) {
+    if(!is_dir(__DIR__.'/.git') && confirm('Do you want to initialize git repository?')) {
         run('git init');
         run('git add .');
         run('git commit -m "Initial commit"');
     }
+
+    run('composer require illuminate/support');
+    run('composer require phpstan/phpstan --dev');
+    run('composer require pestphp/pest --dev');
 
     if(confirm('Do you want to install dependencies?')) {
         run('composer install');
@@ -123,10 +143,4 @@ switch ($packageName) {
         configurePackage($packageName, $options);
         break;
 }
-
-
-
-// tüm dosyaları al
-// mevcut dosyada $decisions arrayindeki değerleri çek
-// str_replace...
 

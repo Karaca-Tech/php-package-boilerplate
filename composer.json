@@ -1,20 +1,18 @@
 {
-    "name": "karaca/deneme",
-    "description": "test",
+    "name": "{vendor}/{package_name}",
+    "description": "{description}",
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "illuminate/support": "^10.22"
+        "php": "{php_version}"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.10",
-        "pestphp/pest": "^2.18"
+
     },
     "autoload": {
         "psr-4": {
-            "karaca\\{namespace}\\": "src/",
-            "karaca\\Tests\\": "tests/"
+            "{vendor}\\{namespace}\\": "src/",
+            "{vendor}\\Tests\\": "tests/"
         }
     },
     "scripts": {
